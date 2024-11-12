@@ -14,5 +14,4 @@ app.get('*', (req, res) => {
 
 // Avvia il server
 app.listen(port, () => {
-  console.log(`Server in ascolto sulla porta ${port}`);
 });
