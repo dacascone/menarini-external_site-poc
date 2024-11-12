@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          Menarini App
+          Menarini
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
