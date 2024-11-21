@@ -26,16 +26,12 @@
             </q-card-actions>
           </q-card>
         </div>
-
-        <div id="pref-center-main" style="margin-top: 2rem;"></div>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
-/* eslint-disable no-console */
-import {onMounted} from 'vue'
 import {generateCodeVerifier, generateCodeChallenge} from '../utils/pkce-utils'
 
 export default {
@@ -44,18 +40,6 @@ export default {
       username: '',
       password: ''
     }
-  },
-  setup () {
-    onMounted(() => {
-      console.log('AAAAA')
-      const script = document.createElement('script')
-      script.id = 'preference-center'
-      script.src = 'https://menarinipharma--dev.sandbox.my.salesforce.com/prefcenter/preference-center-1.2.0/js/main.js'
-      script.setAttribute('pref-center-host', 'https://menarinipharma--dev.sandbox.my.salesforce.com')
-      script.setAttribute('pref-center-name', 'defaultPreferenceManager')
-      script.setAttribute('pref-center-param', 'pctoken') // Sostituisci con il token corretto
-      document.body.appendChild(script)
-    })
   },
   methods: {
     handleLogin() {
@@ -85,7 +69,6 @@ export default {
       const { authUrl } = await response.json()
       window.location.href = authUrl
     }
-
   }
 }
 </script>
