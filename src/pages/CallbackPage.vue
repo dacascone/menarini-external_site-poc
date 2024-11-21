@@ -14,7 +14,8 @@ export default {
 
     if (code && codeVerifier) {
       try {
-        const response = await fetch('https://menarini-external-site-poc-a6774a35f622.herokuapp.com/oauth2/token', {
+        // https://menarini-external-site-poc-a6774a35f622.herokuapp.com/oauth2/token
+        const response = await fetch('http://localhost:3000/oauth2/token', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

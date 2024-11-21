@@ -19,9 +19,10 @@ app.use(express.static(path.join(__dirname, 'dist/spa')))
 app.post('/auth-url', (req, res) => {
   const { code_challenge } = req.body
   const clientId = '3MVG9gYjOgxHsENIQE2.ZOxlu02BCV7Vs2cCv.ONa4bq7e5pHaCmR4NE8dMToAfuoUBWwYwFxoNFU98IrsFdI'
-  const redirectUri = 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com/callback'
+  // https://menarini-external-site-poc-a6774a35f622.herokuapp.com/callback
+  const redirectUri = 'http://localhost:9000/callback'
 
-  const authUrl = `https://menarinipharma.my.salesforce.com/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${code_challenge}&code_challenge_method=S256&scope=openid`
+  const authUrl = `https://menarinipharma.my.site.com/services/auth/sso/Salesforce_Auth?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${code_challenge}&code_challenge_method=S256&scope=openid`
 
   res.json({ authUrl })
 })
@@ -32,7 +33,8 @@ app.post('/oauth2/token', async (req, res) => {
   console.log(code_verifier)
   const clientId = '3MVG9gYjOgxHsENIQE2.ZOxlu02BCV7Vs2cCv.ONa4bq7e5pHaCmR4NE8dMToAfuoUBWwYwFxoNFU98IrsFdI'
   const clientSecret = 'F5E85869EEE3497420D802CA0E66A92CB38EBD969968EE81BF64A9147A9C0570'
-  const redirectUri = 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com/callback'
+  // https://menarini-external-site-poc-a6774a35f622.herokuapp.com/callback
+  const redirectUri = 'http://localhost:9000/callback'
 
   try {
     const fetch = (await import('node-fetch')).default

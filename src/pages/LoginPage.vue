@@ -26,12 +26,16 @@
             </q-card-actions>
           </q-card>
         </div>
+
+        <div id="pref-center-main" style="margin-top: 2rem;"></div>
       </q-page>
     </q-page-container>
   </q-layout>
 </template>
 
 <script>
+/* eslint-disable no-console */
+import {onMounted} from 'vue'
 import {generateCodeVerifier, generateCodeChallenge} from '../utils/pkce-utils'
 
 export default {
@@ -40,6 +44,18 @@ export default {
       username: '',
       password: ''
     }
+  },
+  setup () {
+    onMounted(() => {
+      console.log('AAAAA')
+      const script = document.createElement('script')
+      script.id = 'preference-center'
+      script.src = 'https://menarinipharma--dev.sandbox.my.salesforce.com/prefcenter/preference-center-1.2.0/js/main.js'
+      script.setAttribute('pref-center-host', 'https://menarinipharma--dev.sandbox.my.salesforce.com')
+      script.setAttribute('pref-center-name', 'defaultPreferenceManager')
+      script.setAttribute('pref-center-param', 'pctoken') // Sostituisci con il token corretto
+      document.body.appendChild(script)
+    })
   },
   methods: {
     handleLogin() {
@@ -59,7 +75,8 @@ export default {
       const codeChallenge = await generateCodeChallenge(codeVerifier)
       sessionStorage.setItem('code_verifier', codeVerifier)
 
-      const response = await fetch('https://menarini-external-site-poc-a6774a35f622.herokuapp.com/auth-url', {
+      // https://menarini-external-site-poc-a6774a35f622.herokuapp.com/auth-url
+      const response = await fetch('http://localhost:3000/auth-url', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code_challenge: codeChallenge })

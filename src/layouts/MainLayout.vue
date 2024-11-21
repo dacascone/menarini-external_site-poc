@@ -14,6 +14,12 @@
         <q-toolbar-title>
           Menarini
         </q-toolbar-title>
+
+        <div class="q-gutter-sm row items-center no-wrap q-mb">
+          <q-btn round dense flat color="white" icon="person" @click="goToProfile">
+            <q-tooltip>Profile</q-tooltip>
+          </q-btn>
+        </div>
       </q-toolbar>
     </q-header>
 
@@ -43,8 +49,26 @@
 </template>
 
 <script setup>
+/* eslint-disable no-console */
 import { ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const goToProfile = () => {
+  const accessToken = localStorage.getItem('access_token')
+
+  if (!accessToken) {
+    console.error('L\'utente non è autenticato')
+    router.push('/login')
+    return
+  }
+
+  const profileUrl = `https://menarinipharma.my.site.com/s/?access_token=${accessToken}`
+  console.log('accessToken: ', accessToken)
+  window.location.href = profileUrl
+}
 
 defineOptions({
   name: 'MainLayout'
