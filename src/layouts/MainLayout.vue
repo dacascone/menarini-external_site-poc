@@ -48,7 +48,7 @@ const goToProfile = () => {
   }
 
   const profileUrl = 'https://menarinipharma--developer.sandbox.my.site.com/portal/s/my-profile'
-  window.location.href = profileUrl
+  window.open(profileUrl, '_blank')
 }
 
 const leftDrawerOpen = ref(false)
