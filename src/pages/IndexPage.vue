@@ -26,7 +26,8 @@ onMounted(() => {
   script.src = 'https://menarinipharma--developer.sandbox.my.salesforce.com/prefcenter/preference-center-1.2.0/js/main.js'
   script.setAttribute('pref-center-host', 'https://menarinipharma--developer.sandbox.my.salesforce.com')
   script.setAttribute('pref-center-name', 'Detailed_test')
-  script.setAttribute('pref-center-param', 'QUtJMDAwMDAwY01qYWVUYUlGWHoxSExzZFVhUFhINHVuWnBwZ0o0bEliZ2dDWXlUbERoNXdDaFcxQ2FLZGQvdHAyMFRyWmU5M3g3U0lHODRBbUh0RFgrYW5RUHV3SHFCOE1MMURTQ1hnUUlEZ2VhQ2I4STdsV1VWZUhUZ3ZzNjMyS3huejdGN3hHbGpNUUdBWWpoYWNReStQOFdvaXFzNFQvdz09')
+  script.setAttribute('pref-center-param', 'pctoken')
+  script.setAttribute('pctoken', 'QUtJMDAwMDAwY01qYWVUYUlGWHoxSExzZFVhUFhINHVuWnBwZ0o0bEliZ2dDWXlUbERoNXdDaFcxQ2FLZGQvdHAyMFRyWmU5M3g3U0lHODRBbUh0RFgrYW5RUHV3SHFCOE1MMURTQ1hnUUlEZ2VhQ2I4STdsV1VWZUhUZ3ZzNjMyS3huejdGN3hHbGpNUUdBWWpoYWNReStQOFdvaXFzNFQvdz09')
   script.async = true
 
   script.onload = () => {
