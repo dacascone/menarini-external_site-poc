@@ -9,7 +9,7 @@ const app = express()
 const port = process.env.PORT || 3000
 
 const clientId = '3MVG9Lu3LaaTCEgI8_6qsui3DTcHOgNEzZ1CW4UduSa7IH6O08ncPT6oblRBSSDenx6pxjYajvjIBXX5dK7AF'
-const redirectUri =  process.env.REDIRECT_URI || 'http://localhost:3000/callback'
+const redirectUri =  /* process.env.REDIRECT_URI || 'http://localhost:3000/callback' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com/callback'
 
 app.use(cors())
 app.use(bodyParser.json())

@@ -35,7 +35,7 @@
 /* eslint-disable no-console */
 import {generateCodeVerifier, generateCodeChallenge} from '../utils/pkce-utils'
 
-const API_BASE_URL = process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000'
+const API_BASE_URL = /* process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
 
 export default {
   data() {
