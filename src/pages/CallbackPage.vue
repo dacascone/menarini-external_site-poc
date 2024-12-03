@@ -35,8 +35,8 @@ export default {
         code_verifier: codeVerifier
       })
         .then(response => {
-          const { access_token } = response.data
-          localStorage.setItem('access_token', access_token)
+          const { id_token } = response.data
+          localStorage.setItem('access_token', id_token)
 
           this.router.push('/') // Usa il router per il redirect
         })

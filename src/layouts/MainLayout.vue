@@ -35,21 +35,40 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { jwtDecode } from 'jwt-decode'
 
 const router = useRouter()
 
-const goToProfile = () => {
-  const accessToken = localStorage.getItem('access_token')
 
-  if (!accessToken) {
-    console.error('Utente non autenticato. Reindirizzo al login.')
+const goToProfile = () => {
+  const idToken = localStorage.getItem('id_token')
+
+  if (!idToken) {
+    console.error('Token non presente. Reindirizzo al login.')
     router.push('/login')
     return
   }
 
-  const profileUrl = 'https://menarinipharma--developer.sandbox.my.site.com/portal/s/my-profile'
-  window.open(profileUrl, '_blank')
+  try {
+    // Decodifica il token
+    const decodedToken = jwtDecode(idToken)
+
+    // Estrarre l'ID dalla chiave "profile"
+    const profileUrl = decodedToken.profile
+    const userId = profileUrl.split('/').pop() // Ottiene l'ultima parte dell'URL
+
+    console.log('ID Utente:', userId)
+
+    // Costruisce l'URL del profilo
+    const userProfileUrl = `https://menarinipharma--developer.sandbox.my.site.com/portal/s/profile/${userId}`
+    window.open(userProfileUrl, '_blank')
+  } catch (error) {
+    console.error('Errore nella decodifica del token:', error)
+    router.push('/login')
+  }
 }
+
+
 
 const leftDrawerOpen = ref(false)
 
