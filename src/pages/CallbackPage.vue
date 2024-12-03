@@ -1,43 +1,46 @@
 <template>
-  <q-page class="flex flex-center">
-    <div>Completing login...</div>
-  </q-page>
+  <q-layout>
+    <q-page-container>
+      <q-page class="q-pa-md flex flex-center">
+        <p>Authenticating, please wait...</p>
+      </q-page>
+  </q-page-container>
+  </q-layout>
 </template>
 
 <script>
-/* eslint-disable no-console */
+/* eslint-disable camelcase */
+import axios from 'axios'
+
 export default {
-  async created() {
+  data() {
+    return {
+      router: null
+    }
+  },
+  mounted() {
+    this.router = this.$router // Associa il router
+
     const urlParams = new URLSearchParams(window.location.search)
     const code = urlParams.get('code')
+    const sfdcCommunityUrl = urlParams.get('sfdc_community_url')
     const codeVerifier = sessionStorage.getItem('code_verifier')
 
     if (code && codeVerifier) {
-      try {
-        // https://menarini-external-site-poc-a6774a35f622.herokuapp.com/oauth2/token
-        const response = await fetch('http://localhost:3000/oauth2/token', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            code,
-            code_verifier: codeVerifier
-          })
-        })
+      axios.post('http://localhost:3000/oauth2/callback', {
+        code,
+        sfdc_community_url: sfdcCommunityUrl,
+        code_verifier: codeVerifier
+      })
+        .then(response => {
+          const { access_token } = response.data
+          localStorage.setItem('access_token', access_token)
 
-        const data = await response.json()
-        if (data.access_token) {
-          localStorage.setItem('access_token', data.access_token)
-          this.$router.push('/')
-        } else {
-          console.error('Token non ricevuto:', data)
-        }
-      } catch (error) {
-        console.error('Errore durante il login:', error)
-      }
-    } else {
-      console.error('Code o Code Verifier mancante')
+          this.router.push('/') // Usa il router per il redirect
+        })
+        .catch(error => {
+          console.error('Errore durante l’autenticazione:', error)
+        })
     }
   }
 }

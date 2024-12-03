@@ -32,6 +32,7 @@
 </template>
 
 <script>
+/* eslint-disable no-console */
 import {generateCodeVerifier, generateCodeChallenge} from '../utils/pkce-utils'
 
 export default {
@@ -67,6 +68,7 @@ export default {
       })
 
       const { authUrl } = await response.json()
+      console.log(authUrl)
       window.location.href = authUrl
     }
   }

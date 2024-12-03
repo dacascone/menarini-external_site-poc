@@ -10,11 +10,7 @@
           aria-label="Menu"
           @click="toggleLeftDrawer"
         />
-
-        <q-toolbar-title>
-          Menarini
-        </q-toolbar-title>
-
+        <q-toolbar-title>Menarini</q-toolbar-title>
         <div class="q-gutter-sm row items-center no-wrap q-mb">
           <q-btn round dense flat color="white" icon="person" @click="goToProfile">
             <q-tooltip>Profile</q-tooltip>
@@ -23,22 +19,10 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      bordered
-    >
+    <q-drawer v-model="leftDrawerOpen" bordered>
       <q-list>
-        <q-item-label
-          header
-        >
-          Menu
-        </q-item-label>
-
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.title"
-          v-bind="link"
-        />
+        <q-item-label header>Menu</q-item-label>
+        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
       </q-list>
     </q-drawer>
 
@@ -49,9 +33,7 @@
 </template>
 
 <script setup>
-/* eslint-disable no-console */
 import { ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -60,26 +42,22 @@ const goToProfile = () => {
   const accessToken = localStorage.getItem('access_token')
 
   if (!accessToken) {
-    console.error('L\'utente non è autenticato')
+    console.error('Utente non autenticato. Reindirizzo al login.')
     router.push('/login')
     return
   }
 
-  const profileUrl = `https://menarinipharma.my.site.com/s/?access_token=${accessToken}`
-  console.log('accessToken: ', accessToken)
+  const profileUrl = 'https://menarinipharma--developer.sandbox.my.site.com/portal/s/my-profile'
   window.location.href = profileUrl
 }
-
-defineOptions({
-  name: 'MainLayout'
-})
-
-const linksList = [
-]
 
 const leftDrawerOpen = ref(false)
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
+
+defineOptions({
+  name: 'MainLayout'
+})
 </script>

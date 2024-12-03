@@ -1,5 +1,6 @@
-/* eslint-disable camelcase,no-console */
+/* eslint-disable camelcase */
 const express = require('express')
+const axios = require('axios')
 const path = require('path')
 const bodyParser = require('body-parser')
 const cors = require('cors')
@@ -7,58 +8,38 @@ const cors = require('cors')
 const app = express()
 const port = process.env.PORT || 3000
 
-app.use(cors({
-  origin: '*', // Permette l'accesso da qualsiasi dominio
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
-}))
+const clientId = '3MVG9Lu3LaaTCEgI8_6qsui3DTcHOgNEzZ1CW4UduSa7IH6O08ncPT6oblRBSSDenx6pxjYajvjIBXX5dK7AF'
+const redirectUri =  process.env.REDIRECT_URI || 'http://localhost:3000/callback'
 
+app.use(cors())
 app.use(bodyParser.json())
 app.use(express.static(path.join(__dirname, 'dist/spa')))
 
 app.post('/auth-url', (req, res) => {
   const { code_challenge } = req.body
-  const clientId = '3MVG9gYjOgxHsENIQE2.ZOxlu02BCV7Vs2cCv.ONa4bq7e5pHaCmR4NE8dMToAfuoUBWwYwFxoNFU98IrsFdI'
-  // https://menarini-external-site-poc-a6774a35f622.herokuapp.com/callback
-  const redirectUri = 'http://localhost:9000/callback'
 
-  const authUrl = `https://menarinipharma.my.site.com/services/auth/sso/Salesforce_Auth?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${code_challenge}&code_challenge_method=S256&scope=openid`
+  const authUrl = `https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${code_challenge}&code_challenge_method=S256&scope=openid profile email`
 
   res.json({ authUrl })
 })
 
-app.post('/oauth2/token', async (req, res) => {
+app.post('/oauth2/callback', async (req, res) => {
   const { code, code_verifier } = req.body
-  console.log(code)
-  console.log(code_verifier)
-  const clientId = '3MVG9gYjOgxHsENIQE2.ZOxlu02BCV7Vs2cCv.ONa4bq7e5pHaCmR4NE8dMToAfuoUBWwYwFxoNFU98IrsFdI'
-  const clientSecret = 'F5E85869EEE3497420D802CA0E66A92CB38EBD969968EE81BF64A9147A9C0570'
-  // https://menarini-external-site-poc-a6774a35f622.herokuapp.com/callback
-  const redirectUri = 'http://localhost:9000/callback'
-
   try {
-    const fetch = (await import('node-fetch')).default
-
-    const response = await fetch('https://menarinipharma.my.salesforce.com/services/oauth2/token', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
+    const response = await axios.post('https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/token', null, {
+      params: {
         grant_type: 'authorization_code',
         client_id: clientId,
-        client_secret: clientSecret,
+        redirect_uri: redirectUri,
         code,
-        code_verifier,
-        redirect_uri: redirectUri
-      })
+        code_verifier
+      }
     })
 
-    const data = await response.json()
-    res.json(data)
+    res.json(response.data)
   } catch (error) {
-    console.error('Errore durante lo scambio di token:', error)
-    res.status(500).json({ error: 'Errore durante lo scambio di token' })
+    console.error('Errore nello scambio del codice:', error.response?.data || error.message)
+    res.status(500).send('Errore durante il login')
   }
 })
 
