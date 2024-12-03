@@ -12,6 +12,8 @@
 /* eslint-disable camelcase */
 import axios from 'axios'
 
+const API_BASE_URL = process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000'
+
 export default {
   data() {
     return {
@@ -27,7 +29,7 @@ export default {
     const codeVerifier = sessionStorage.getItem('code_verifier')
 
     if (code && codeVerifier) {
-      axios.post('http://localhost:3000/oauth2/callback', {
+      axios.post(`${API_BASE_URL}/oauth2/callback`, {
         code,
         sfdc_community_url: sfdcCommunityUrl,
         code_verifier: codeVerifier

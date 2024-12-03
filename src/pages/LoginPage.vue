@@ -35,6 +35,8 @@
 /* eslint-disable no-console */
 import {generateCodeVerifier, generateCodeChallenge} from '../utils/pkce-utils'
 
+const API_BASE_URL = process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000'
+
 export default {
   data() {
     return {
@@ -61,7 +63,7 @@ export default {
       sessionStorage.setItem('code_verifier', codeVerifier)
 
       // https://menarini-external-site-poc-a6774a35f622.herokuapp.com/auth-url
-      const response = await fetch('http://localhost:3000/auth-url', {
+      const response = await fetch(`${API_BASE_URL}/auth-url`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code_challenge: codeChallenge })
