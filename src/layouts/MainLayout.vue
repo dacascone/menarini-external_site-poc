@@ -41,7 +41,7 @@ const router = useRouter()
 
 
 const goToProfile = () => {
-  const idToken = localStorage.getItem('id_token')
+  const idToken = localStorage.getItem('access_token')
 
   if (!idToken) {
     console.error('Token non presente. Reindirizzo al login.')
