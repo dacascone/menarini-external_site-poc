@@ -16,5 +16,16 @@ export default route((/* { store, ssrContext } */) => {
     history: createHistory(process.env.VUE_ROUTER_BASE)
   })
 
+  Router.beforeEach((to, from, next) => {
+    const accessToken = localStorage.getItem('access_token')
+
+    if (to.meta.requiresAuth && !accessToken) {
+      console.log('Utente non autenticato. Reindirizzo al login.')
+      next('/login')
+    } else {
+      next()
+    }
+  })
+
   return Router
 })
