@@ -1,18 +1,19 @@
 <template>
   <q-page className="flex flex-center">
     <!-- Container for Preference Manager -->
+    <div>Home Placeholder</div>
     <div id="pref-center-main"></div>
   </q-page>
 </template>
 
 <script setup>
-import {onMounted} from 'vue'
+// import {onMounted} from 'vue'
 
 defineOptions({
   name: 'IndexPage'
 })
 
-onMounted(() => {
+/* onMounted(() => {
   // Inject the Preference Manager CSS
   const link = document.createElement('link')
   link.rel = 'stylesheet'
@@ -39,5 +40,5 @@ onMounted(() => {
   }
 
   document.body.appendChild(script)
-})
+}) */
 </script>
