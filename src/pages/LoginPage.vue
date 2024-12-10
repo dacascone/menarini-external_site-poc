@@ -1,30 +1,15 @@
 <template>
   <q-layout>
-    <q-page-container class="bg-primary">
-      <q-page class="q-pa-md flex flex-center">
-        <div class="column items-center">
-          <div class="q-pb-md">
+    <q-page-container className="bg-primary">
+      <q-page className="q-pa-md flex flex-center">
+        <div className="column items-center">
+          <div className="q-pb-md">
             <img
               src="~assets/menarini.svg"
               style="width: 150px;"
             >
           </div>
-          <q-card class="q-pa-md" style="width: 300px">
-            <q-card-section>
-              <div class="text-h6 text-ce">Log Into Menarini</div>
-            </q-card-section>
-            <q-card-section>
-              <q-input v-model="username" label="Username" outlined />
-              <q-input v-model="password" type="password" label="Password" outlined class="q-mt-md" />
-            </q-card-section>
-            <q-card-actions align="center">
-              <q-btn label="Login" color="primary" @click="handleLogin" />
-            </q-card-actions>
-            <q-separator />
-            <q-card-actions align="center">
-              <q-btn label="Login with Salesforce" style="background-color:#0176d3; color: #ffffff" @click="handleSalesforceLogin" />
-            </q-card-actions>
-          </q-card>
+          <q-spinner color="primary" size="50px"/>
         </div>
       </q-page>
     </q-page-container>
@@ -35,43 +20,39 @@
 /* eslint-disable no-console */
 import {generateCodeVerifier, generateCodeChallenge} from '../utils/pkce-utils'
 
-const API_BASE_URL = /* process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
+const API_BASE_URL = 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
 
 export default {
-  data() {
-    return {
-      username: '',
-      password: ''
-    }
+  mounted() {
+    this.handleSalesforceLogin()
   },
   methods: {
-    handleLogin() {
-      if (this.username === 'user' && this.password === 'pass') {
-        localStorage.setItem('authenticated', 'true')
-        this.$router.push('/')
-      } else {
+    async handleSalesforceLogin() {
+      try {
+        const codeVerifier = generateCodeVerifier()
+        const codeChallenge = await generateCodeChallenge(codeVerifier)
+        sessionStorage.setItem('code_verifier', codeVerifier)
+
+        const response = await fetch(`${API_BASE_URL}/auth-url`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({code_challenge: codeChallenge})
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch auth URL')
+        }
+
+        const {authUrl} = await response.json()
+        window.location.href = authUrl
+      } catch (error) {
+        console.error('Error during Salesforce login:', error)
         this.$q.notify({
           color: 'negative',
-          message: 'Username o password errati',
+          message: 'Login automatico fallito, riprova più tardi',
           position: 'top'
         })
       }
-    },
-    async handleSalesforceLogin() {
-      const codeVerifier = generateCodeVerifier()
-      const codeChallenge = await generateCodeChallenge(codeVerifier)
-      sessionStorage.setItem('code_verifier', codeVerifier)
-
-      // https://menarini-external-site-poc-a6774a35f622.herokuapp.com/auth-url
-      const response = await fetch(`${API_BASE_URL}/auth-url`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code_challenge: codeChallenge })
-      })
-
-      const { authUrl } = await response.json()
-      console.log(authUrl)
-      window.location.href = authUrl
     }
   }
 }
