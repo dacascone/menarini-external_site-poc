@@ -20,7 +20,7 @@
 /* eslint-disable no-console */
 import {generateCodeVerifier, generateCodeChallenge} from '../utils/pkce-utils'
 
-const API_BASE_URL = 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
+const API_BASE_URL = /* 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
 
 export default {
   mounted() {
@@ -44,6 +44,7 @@ export default {
         }
 
         const {authUrl} = await response.json()
+        console.log(`authUrl: ${  authUrl}`)
         window.location.href = authUrl
       } catch (error) {
         console.error('Error during Salesforce login:', error)

@@ -60,7 +60,7 @@ const goToProfile = () => {
     console.log('ID Utente:', userId)
 
     // Costruisce l'URL del profilo
-    const userProfileUrl = `https://menarinipharma--developer.sandbox.my.site.com/s`
+    const userProfileUrl = `https://menarinipharma--developer.sandbox.my.site.com/externallogin/s`
     window.open(userProfileUrl, '_blank')
   } catch (error) {
     console.error('Errore nella decodifica del token:', error)

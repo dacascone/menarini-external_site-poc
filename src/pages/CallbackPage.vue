@@ -12,7 +12,7 @@
 /* eslint-disable camelcase */
 import axios from 'axios'
 
-const API_BASE_URL = /* process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
+const API_BASE_URL =  process.env.VUE_APP_API_BASE_URL || /* 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
 
 export default {
   data() {
@@ -27,6 +27,10 @@ export default {
     const code = urlParams.get('code')
     const sfdcCommunityUrl = urlParams.get('sfdc_community_url')
     const codeVerifier = sessionStorage.getItem('code_verifier')
+
+    console.log('sfdcCommunityUrl: ', sfdcCommunityUrl)
+    console.log('codeVerifier: ', codeVerifier)
+    console.log('code: ', code)
 
     if (code && codeVerifier) {
       axios.post(`${API_BASE_URL}/oauth2/callback`, {
