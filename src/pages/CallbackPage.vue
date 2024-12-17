@@ -26,7 +26,7 @@ export default {
     const urlParams = new URLSearchParams(window.location.search)
     const code = urlParams.get('code')
     const sfdcCommunityUrl = urlParams.get('sfdc_community_url')
-    const codeVerifier = sessionStorage.getItem('code_verifier')
+    const codeVerifier = localStorage.getItem('code_verifier')
 
     console.log('sfdcCommunityUrl: ', sfdcCommunityUrl)
     console.log('codeVerifier: ', codeVerifier)

@@ -31,7 +31,7 @@ export default {
       try {
         const codeVerifier = generateCodeVerifier()
         const codeChallenge = await generateCodeChallenge(codeVerifier)
-        sessionStorage.setItem('code_verifier', codeVerifier)
+        localStorage.setItem('code_verifier', codeVerifier)
 
         const response = await fetch(`${API_BASE_URL}/auth-url`, {
           method: 'POST',
