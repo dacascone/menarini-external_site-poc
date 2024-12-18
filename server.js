@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'dist/spa')))
 app.post('/auth-url', (req, res) => {
   const { code_challenge } = req.body
 
-  const authUrl = `https://menarinipharma--developer.sandbox.my.site.com/externallogin/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${code_challenge}&code_challenge_method=S256&scope=openid profile email`
+  const authUrl = `https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${code_challenge}&code_challenge_method=S256&scope=openid profile email`
 
   console.log(authUrl)
   res.json({ authUrl })
@@ -27,7 +27,7 @@ app.post('/auth-url', (req, res) => {
 app.post('/oauth2/callback', async (req, res) => {
   const { code, code_verifier } = req.body
   try {
-    const response = await axios.post('https://menarinipharma--developer.sandbox.my.site.com/externallogin/services/oauth2/token', null, {
+    const response = await axios.post('https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/token', null, {
       params: {
         grant_type: 'authorization_code',
         client_id: clientId,
