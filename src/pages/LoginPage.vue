@@ -45,7 +45,10 @@ export default {
 
         const {authUrl} = await response.json()
         console.log(`authUrl: ${  authUrl}`)
-        window.location.href = authUrl
+        const url = new URL (authUrl)
+        // window.location.href = authUrl
+        url.searchParams.append('nome_parametro', 'valore_parametro')
+        window.location.href = url.toString()
       } catch (error) {
         console.error('Error during Salesforce login:', error)
         this.$q.notify({
