@@ -18,7 +18,7 @@ app.use(express.static(path.join(__dirname, 'dist/spa')))
 app.post('/auth-url', (req, res) => {
   const { code_challenge } = req.body
 
-  const authUrl = `https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/authorize?&state=identificativo_sito_chiamante&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${code_challenge}&code_challenge_method=S256&scope=openid profile email`
+  const authUrl = `https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/authorize?&response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=identificativo_sito_chiamante&code_challenge=${code_challenge}&code_challenge_method=S256&scope=openid profile email`
 
   console.log(authUrl)
   res.json({ authUrl })
