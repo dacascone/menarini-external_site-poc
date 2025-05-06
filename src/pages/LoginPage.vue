@@ -20,7 +20,7 @@
 /* eslint-disable no-console */
 import {generateCodeVerifier, generateCodeChallenge} from '../utils/pkce-utils'
 
-const API_BASE_URL = /* 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
+const API_BASE_URL = 'http://localhost:3000' // 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
 
 export default {
   mounted() {
@@ -48,7 +48,9 @@ export default {
         const url = new URL (authUrl)
         // window.location.href = authUrl
         url.searchParams.append('nome_parametro', 'valore_parametro')
+        console.log(url.toString())
         window.location.href = url.toString()
+        // window.location.href = url.toString()
       } catch (error) {
         console.error('Error during Salesforce login:', error)
         this.$q.notify({

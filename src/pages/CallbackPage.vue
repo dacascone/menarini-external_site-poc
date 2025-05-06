@@ -12,7 +12,7 @@
 /* eslint-disable camelcase */
 import axios from 'axios'
 
-const API_BASE_URL =  process.env.VUE_APP_API_BASE_URL || /* 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
+const API_BASE_URL =  process.env.VUE_APP_API_BASE_URL || 'http://localhost:3000' /* 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com' */
 
 export default {
   data() {
@@ -26,6 +26,7 @@ export default {
     const urlParams = new URLSearchParams(window.location.search)
     const code = urlParams.get('code')
     const sfdcCommunityUrl = urlParams.get('sfdc_community_url')
+    const state = urlParams.get('state')
     const codeVerifier = localStorage.getItem('code_verifier')
 
     console.log('sfdcCommunityUrl: ', sfdcCommunityUrl)
@@ -36,7 +37,8 @@ export default {
       axios.post(`${API_BASE_URL}/oauth2/callback`, {
         code,
         sfdc_community_url: sfdcCommunityUrl,
-        code_verifier: codeVerifier
+        code_verifier: codeVerifier,
+        state
       })
         .then(response => {
           const { id_token } = response.data
