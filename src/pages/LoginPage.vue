@@ -20,7 +20,7 @@
 /* eslint-disable no-console */
 import {generateCodeVerifier, generateCodeChallenge} from '../utils/pkce-utils'
 
-const API_BASE_URL = 'http://localhost:3000' // 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
+const API_BASE_URL = /* 'http://localhost:3000' */  'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
 
 export default {
   mounted() {
@@ -38,6 +38,8 @@ export default {
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({code_challenge: codeChallenge})
         })
+
+        console.log('Response auth url: ', response)
 
         if (!response.ok) {
           throw new Error('Failed to fetch auth URL')

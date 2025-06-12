@@ -33,6 +33,7 @@
 </template>
 
 <script setup>
+/* eslint-disable no-console */
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { jwtDecode } from 'jwt-decode'

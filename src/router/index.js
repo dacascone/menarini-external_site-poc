@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { route } from 'quasar/wrappers'
 import {
   createRouter, createMemoryHistory, createWebHistory, createWebHashHistory
