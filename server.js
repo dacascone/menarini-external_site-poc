@@ -34,7 +34,7 @@ app.use(express.static(path.join(__dirname, 'dist/spa')))
 // 1) Restituisce l’URL di autorizzazione (PKCE)
 app.post('/auth-url', (req, res) => {
   const { code_challenge } = req.body
-
+  console.log('ciao Dario')
   const authUrl =
     `https://menarinipharma--release.sandbox.my.site.com/services/oauth2/authorize/${expIdSegment}` +
     `?response_type=code` +
