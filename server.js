@@ -36,7 +36,7 @@ app.post('/auth-url', (req, res) => {
   const { code_challenge } = req.body
   console.log('ciao Dario')
   const authUrl =
-    `https://menarinipharma--release.sandbox.my.site.com/ciam/services/oauth2/authorize/${expIdSegment}` +
+    `https://menarinipharma--test.sandbox.my.site.com/ciam/services/oauth2/authorize/${expIdSegment}` +
     `?response_type=code` +
     `&client_id=${clientId}` +
     `&redirect_uri=${redirectUri}` +
@@ -53,7 +53,7 @@ app.post('/oauth2/callback', async (req, res) => {
 
   try {
     const { data } = await axios.post(
-      'https://menarinipharma--release.sandbox.my.site.com/ciam/services/oauth2/token',
+      'https://menarinipharma--test.sandbox.my.site.com/ciam/services/oauth2/token',
       null,
       {
         params: {
