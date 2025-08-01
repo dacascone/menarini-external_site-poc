@@ -35,8 +35,9 @@ app.use(express.static(path.join(__dirname, 'dist/spa')))
 app.post('/auth-url', (req, res) => {
   const { code_challenge } = req.body
   console.log('ciao Dario')
+  // AGGIUNGERE https://menarinipharma--developer.sandbox.my.site.com/ciam PER RELEASE TEST
   const authUrl =
-    `https://menarinipharma--developer.sandbox.my.site.com/ciam/services/oauth2/authorize/${expIdSegment}` +
+    `https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/authorize/${expIdSegment}` +
     `?response_type=code` +
     `&client_id=${clientId}` +
     `&redirect_uri=${redirectUri}` +
@@ -53,7 +54,7 @@ app.post('/oauth2/callback', async (req, res) => {
 
   try {
     const { data } = await axios.post(
-      'https://menarinipharma--developer.sandbox.my.site.com/ciam/services/oauth2/token',
+      'https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/token',
       null,
       {
         params: {
