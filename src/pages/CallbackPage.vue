@@ -48,7 +48,6 @@ export default {
         })
         .catch(error => {
           console.error('Errore durante l’autenticazione:', error)
-          this.router.push('/')
         })
     }
   }
