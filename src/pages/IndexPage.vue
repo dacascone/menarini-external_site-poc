@@ -1,7 +1,7 @@
 <template>
   <q-page className="flex flex-center">
     <!-- Container for Preference Manager -->
-    <div>Home Placeholder</div>
+    <div>You are logged in. Please note that this is a <strong>demo site</strong></div>
     <div id="pref-center-main"></div>
   </q-page>
 </template>
