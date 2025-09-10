@@ -47,8 +47,6 @@ export default {
           this.router.push('/') // Usa il router per il redirect
         })
         .catch(error => {
-          localStorage.setItem('access_token', 'demoPurpose')
-          this.router.push('/')
           console.error('Errore durante l’autenticazione:', error)
         })
     }
