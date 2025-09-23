@@ -19,7 +19,7 @@ const redirectUri = process.env.REDIRECT_URI   // es. http://localhost:3000/call
 const expId       = process.env.EXPID          // es. 12345
 
 // costruisce il segmento expid_<valore> solo se EXPID è valorizzato
-const expIdSegment = expId ? `expid_${expId}` : 'expid_12345'
+const expIdSegment = expId ? `expid_${expId}` : 'expid_12345_IT'
 
 /* ---------------------------------------------------------------------------
    MIDDLEWARE
@@ -37,7 +37,7 @@ app.post('/auth-url', (req, res) => {
   console.log('ciao Dario')
   // MODIFICARE IN `https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/authorize/ PER DEVELOPER TEST (Developer unico senza /ciam)
   const authUrl =
-    `https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/authorize/${expIdSegment}` +
+    `https://menarinipharma--release.sandbox.my.site.com/ciam/services/oauth2/authorize/${expIdSegment}` +
     `?response_type=code` +
     `&client_id=${clientId}` +
     `&redirect_uri=${redirectUri}` +
@@ -54,7 +54,7 @@ app.post('/oauth2/callback', async (req, res) => {
   try {
     // MODIFICARE IN `https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/token PER DEVELOPER TEST (Developer unico senza /ciam)
     const { data } = await axios.post(
-      'https://menarinipharma--developer.sandbox.my.site.com/services/oauth2/token',
+      'https://menarinipharma--release.sandbox.my.site.com/ciam/services/oauth2/token',
       null,
       {
         params: {
