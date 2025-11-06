@@ -18,9 +18,12 @@
 
 <script>
 /* eslint-disable no-console */
-import {generateCodeVerifier, generateCodeChallenge} from '../utils/pkce-utils'
+import { generateCodeVerifier, generateCodeChallenge } from '../utils/pkce-utils'
 
-const API_BASE_URL = /* 'http://localhost:3000' */  'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
+const API_BASE_URL = /* 'http://localhost:3000' */ 'http://localhost:3000'
+
+// Imposta qui la community che stai usando (release/ciam come dai log)
+const SFDC_COMMUNITY_URL = 'https://menarinipharma--release.sandbox.my.site.com/ciam'
 
 export default {
   mounted() {
@@ -35,24 +38,23 @@ export default {
 
         const response = await fetch(`${API_BASE_URL}/auth-url`, {
           method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({code_challenge: codeChallenge})
+          headers: { 'Content-Type': 'application/json' },
+          // 👇 passiamo anche la community per allineare authorize/token/revoke
+          body: JSON.stringify({
+            code_challenge: codeChallenge,
+            sfdc_community_url: SFDC_COMMUNITY_URL
+          })
         })
 
-        console.log('Response auth url: ', response)
-
         if (!response.ok) {
-          throw new Error('Failed to fetch auth URL')
+          throw new Error(`Failed to fetch auth URL (${response.status})`)
         }
 
-        const {authUrl} = await response.json()
-        console.log(`authUrl: ${  authUrl}`)
-        const url = new URL (authUrl)
-        // window.location.href = authUrl
-        url.searchParams.append('nome_parametro', 'valore_parametro')
-        console.log(url.toString())
-        window.location.href = url.toString()
-        // window.location.href = url.toString()
+        const { authUrl } = await response.json()
+        console.log('[LOGIN] authUrl:', authUrl)
+
+        // Redirect verso Salesforce (PKCE)
+        window.location.href = authUrl
       } catch (error) {
         console.error('Error during Salesforce login:', error)
         this.$q.notify({

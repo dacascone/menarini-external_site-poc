@@ -4,7 +4,7 @@
       <q-page class="q-pa-md flex flex-center">
         <p>Authenticating, please wait...</p>
       </q-page>
-  </q-page-container>
+    </q-page-container>
   </q-layout>
 </template>
 
@@ -12,7 +12,8 @@
 /* eslint-disable camelcase,no-console */
 import axios from 'axios'
 
-const API_BASE_URL =  process.env.VUE_APP_API_BASE_URL ||  /* 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
+const API_BASE_URL = process.env.VUE_APP_API_BASE_URL
+  || /* 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
 
 export default {
   data() {
@@ -21,7 +22,7 @@ export default {
     }
   },
   mounted() {
-    this.router = this.$router // Associa il router
+    this.router = this.$router
 
     const urlParams = new URLSearchParams(window.location.search)
     const code = urlParams.get('code')
@@ -41,13 +42,15 @@ export default {
         state
       })
         .then(response => {
-          const { id_token } = response.data
-          localStorage.setItem('access_token', id_token)
-
-          this.router.push('/') // Usa il router per il redirect
+          const { id_token, access_token, refresh_token } = response.data
+          if (id_token)      localStorage.setItem('access_token', id_token)
+          if (access_token)  localStorage.setItem('sf_access_token', access_token)
+          if (refresh_token) localStorage.setItem('refresh_token', refresh_token)
+          this.router.push('/')
         })
         .catch(error => {
-          console.error('Errore durante l’autenticazione:', error)
+          // 👇 ora vedi l’errore reale (SF) inoltrato dal server
+          console.error('Errore durante l’autenticazione:', error?.response?.data || error.message)
         })
     }
   }
