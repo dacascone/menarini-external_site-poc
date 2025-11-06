@@ -63,9 +63,8 @@
 import { ref } from 'vue'
 
 // === CONFIG ===
-const APP_LOGIN_URL = `${window.location.origin}/login`
 const SFDC_COMMUNITY_LOGOUT_URL =
-  'https://menarinipharma--release.sandbox.my.site.com/secur/logout.jsp'
+  'https://menarinipharma--release.sandbox.my.site.com/ciam/secur/logout.jsp'
 
 // === MENU ACTIONS ===
 const openPreferenceCenter = () => {
@@ -81,9 +80,7 @@ const logout = () => {
     sessionStorage.clear()
   } finally {
     // logout community + ritorno a /login
-    const ret = `${SFDC_COMMUNITY_LOGOUT_URL}?retUrl=${encodeURIComponent(
-      APP_LOGIN_URL
-    )}`
+    const ret = `${SFDC_COMMUNITY_LOGOUT_URL}`
     window.location.href = ret
   }
 }
