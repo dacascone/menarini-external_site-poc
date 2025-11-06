@@ -23,9 +23,7 @@
                   <q-item-section avatar>
                     <q-icon name="tune" />
                   </q-item-section>
-                  <q-item-section>
-                    Preference Center
-                  </q-item-section>
+                  <q-item-section>Preference Center</q-item-section>
                 </q-item>
 
                 <q-separator />
@@ -34,9 +32,7 @@
                   <q-item-section avatar>
                     <q-icon name="logout" />
                   </q-item-section>
-                  <q-item-section>
-                    Logout
-                  </q-item-section>
+                  <q-item-section>Logout</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -48,7 +44,11 @@
     <q-drawer v-model="leftDrawerOpen" bordered>
       <q-list>
         <q-item-label header>Menu</q-item-label>
-        <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
+        <EssentialLink
+          v-for="link in linksList"
+          :key="link.title"
+          v-bind="link"
+        />
       </q-list>
     </q-drawer>
 
@@ -65,25 +65,35 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
+// === CONFIGURATION ===
+const APP_LOGIN_URL = `${window.location.origin}/login`
+const SFDC_COMMUNITY_LOGOUT_URL =
+  'https://menarinipharma--release.sandbox.my.site.com/secur/logout.jsp'
+
 // === MENU ACTIONS ===
 const openPreferenceCenter = () => {
-  const url = 'https://privacyportaluatde.onetrust.com/ui/#/preferences/multipage/token/6ffcd06d-7ede-4217-b94b-3a96a366b208/Emv7TKQV8QCvDr05czK8GvQY%2FMZ0F3B9H49ilnKO4Ys%3D'
+  const url =
+    'https://privacyportaluatde.onetrust.com/ui/#/preferences/multipage/token/6ffcd06d-7ede-4217-b94b-3a96a366b208/Emv7TKQV8QCvDr05czK8GvQY%2FMZ0F3B9H49ilnKO4Ys%3D'
   window.open(url, '_blank', 'noopener,noreferrer')
 }
 
 const logout = () => {
   try {
-    // Rimuovi tutto lo stato locale della sessione applicativa
+    // Rimuoviamo tutti i token / dati locali
     localStorage.clear()
     sessionStorage.clear()
-  } finally {
-    // Ritorna alla pagina di login dell'app
     router.replace('/login')
+  } finally {
+    // Reindirizziamo all’endpoint logout della community per far uscire SSO
+    const ret = `${SFDC_COMMUNITY_LOGOUT_URL}?retUrl=${encodeURIComponent(
+      APP_LOGIN_URL
+    )}`
+    window.location.href = ret
   }
 }
 
 const leftDrawerOpen = ref(false)
-function toggleLeftDrawer() {
+const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
 }
 
@@ -91,3 +101,7 @@ defineOptions({
   name: 'MainLayout'
 })
 </script>
+
+<style scoped>
+/* Aggiungi qui stili specifici se necessari */
+</style>
