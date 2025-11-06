@@ -61,16 +61,9 @@
 <script setup>
 /* eslint-disable no-console */
 import { ref } from 'vue'
-import axios from 'axios'
+import { useRouter } from 'vue-router'
 
-// === CONFIG ===
-const API_BASE_URL = process.env.VUE_APP_API_BASE_URL
-  || 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
-
-// Per pulire anche i cookie SSO della community (opzionale ma consigliato)
-const SALESFORCE_LOGOUT_URL =
-  'https://menarinipharma--release.sandbox.my.site.com/secur/logout.jsp' // usa l’endpoint dell’ambiente attuale
-const APP_RETURN_URL = `${window.location.origin}/login`
+const router = useRouter()
 
 // === MENU ACTIONS ===
 const openPreferenceCenter = () => {
@@ -78,31 +71,14 @@ const openPreferenceCenter = () => {
   window.open(url, '_blank', 'noopener,noreferrer')
 }
 
-const logout = async () => {
+const logout = () => {
   try {
-    const idToken      = localStorage.getItem('access_token')     // id_token salvato dall’app
-    const sfAccess     = localStorage.getItem('sf_access_token')  // access_token reale (se presente)
-    const refreshToken = localStorage.getItem('refresh_token')
-
-    // tenta revoca server-side (non blocca se fallisce)
-    if (sfAccess || refreshToken || idToken) {
-      await axios.post(`${API_BASE_URL}/logout`, {
-        access_token: sfAccess || idToken,
-        refresh_token: refreshToken
-      }).catch(() => void 0)
-    }
+    // Rimuovi tutto lo stato locale della sessione applicativa
+    localStorage.clear()
+    sessionStorage.clear()
   } finally {
-    // pulizia storage locale
-    localStorage.removeItem('access_token')     // id_token
-    localStorage.removeItem('sf_access_token')  // access_token (opz.)
-    localStorage.removeItem('refresh_token')
-    localStorage.removeItem('code_verifier')
-
-    // redirect a logout Salesforce per chiudere anche la sessione community
-    const ret = `${SALESFORCE_LOGOUT_URL}?retUrl=${encodeURIComponent(APP_RETURN_URL)}`
-    window.location.href = ret
-
-    // Se preferisci restare nell’app: usa router.push('/login') e rimuovi il redirect sopra.
+    // Ritorna alla pagina di login dell'app
+    router.replace('/login')
   }
 }
 
