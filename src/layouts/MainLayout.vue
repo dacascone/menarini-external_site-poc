@@ -61,11 +61,8 @@
 <script setup>
 /* eslint-disable no-console */
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 
-const router = useRouter()
-
-// === CONFIGURATION ===
+// === CONFIG ===
 const APP_LOGIN_URL = `${window.location.origin}/login`
 const SFDC_COMMUNITY_LOGOUT_URL =
   'https://menarinipharma--release.sandbox.my.site.com/secur/logout.jsp'
@@ -79,12 +76,11 @@ const openPreferenceCenter = () => {
 
 const logout = () => {
   try {
-    // Rimuoviamo tutti i token / dati locali
+    // pulizia stato locale
     localStorage.clear()
     sessionStorage.clear()
-    router.replace('/login')
   } finally {
-    // Reindirizziamo all’endpoint logout della community per far uscire SSO
+    // logout community + ritorno a /login
     const ret = `${SFDC_COMMUNITY_LOGOUT_URL}?retUrl=${encodeURIComponent(
       APP_LOGIN_URL
     )}`
@@ -103,5 +99,5 @@ defineOptions({
 </script>
 
 <style scoped>
-/* Aggiungi qui stili specifici se necessari */
+/* Stili opzionali */
 </style>
