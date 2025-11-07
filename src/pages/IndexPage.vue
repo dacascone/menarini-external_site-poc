@@ -25,7 +25,6 @@ defineOptions({
 
 <style scoped>
 .consensi-image {
-  max-width: 300px;
   width: 100%;
   height: auto;
 }
