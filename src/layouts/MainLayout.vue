@@ -64,7 +64,7 @@ import { ref } from 'vue'
 
 // === CONFIG ===
 const SFDC_COMMUNITY_LOGOUT_URL =
-  'https://menarinipharma--release.sandbox.my.site.com/ciam/secur/logout.jsp'
+  'https://menarinipharma--test.sandbox.my.site.com/ciam/secur/logout.jsp'
 
 // === MENU ACTIONS ===
 const openPreferenceCenter = () => {
