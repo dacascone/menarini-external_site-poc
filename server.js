@@ -80,7 +80,7 @@ app.post('/auth-url', (req, res) => {
     `&redirect_uri=${encodeURIComponent(redirectUri)}` +
     `&code_challenge=${encodeURIComponent(code_challenge)}` +
     `&code_challenge_method=S256` +
-    `&scope=${encodeURIComponent('openid profile email offline_access address phone')}`
+    `&scope=${encodeURIComponent('openid profile offline_access address phone')}`
 
   console.log('[AUTH-URL] communityUrl:', communityUrl || '(default release/ciam)')
   console.log('[AUTH-URL] redirect_uri:', redirectUri)
