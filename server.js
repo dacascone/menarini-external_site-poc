@@ -121,6 +121,9 @@ app.post('/oauth2/callback', async (req, res) => {
       res.status(400).json(data)
     } else {
       console.log('[TOKEN][OK] received keys:', Object.keys(data))
+      console.log('[TOKEN][OK] access_token:', data.access_token)
+      console.log('[TOKEN][OK] id_token:', data.id_token)
+      console.log('[TOKEN][OK] scope:', data.scope)
       res.json(data)
     }
   } catch (error) {
