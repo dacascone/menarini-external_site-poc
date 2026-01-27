@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000
    CONFIG
 --------------------------------------------------------------------------- */
 const clientId    = process.env.CLIENT_ID
-  || '3MVG94wTqkLCfCy0zcQFIaCMArbfauGKTH2V.sODtRuRzUoLwtcKPT9ynvyD3FDdPiWaiyT1ukWvsCx2O93c6'
+  || '3MVG9kfeuo6xCm.r16r._goNjZJwm9BX9OEpyjQIaM0IFaHzM03TumZzRG55dLBMo0s8Dip4zslg.gbarRkjA'
 
 // ⚠️ Deve combaciare 1:1 con ciò usato in /auth-url (e registrato nella Connected App)
 const redirectUri = process.env.REDIRECT_URI // es: http://localhost:3000/callback
@@ -48,7 +48,7 @@ function buildSalesforceEndpoints(communityUrl) {
   // Se arriva dal FE, usiamo quello (es: https://.../ciam), altrimenti fallback release/ciam
   const base = (communityUrl && communityUrl.trim())
     ? communityUrl.replace(/\/+$/, '') // strip trailing slash
-    : 'https://menarinipharma--release.sandbox.my.site.com/ciam'
+    : 'https://menarinipharma--test.sandbox.my.site.com/ciam'
 
   // authorize: con expid se presente, altrimenti senza segmento
   const authorize = expId
