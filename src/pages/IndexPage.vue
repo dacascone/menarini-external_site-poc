@@ -1,11 +1,11 @@
 <template>
   <q-page class="flex flex-center column q-pa-lg">
     <!-- Immagine centrata -->
-    <img
+    <!--img
       src="~assets/consensi.png"
       alt="Consensi"
       class="consensi-image q-mb-md"
-    />
+    /-->
 
     <!-- Testo demo -->
     <div class="text-center">
