@@ -64,7 +64,7 @@ import { ref } from 'vue'
 
 // === CONFIG ===
 const SFDC_COMMUNITY_LOGOUT_URL =
-  'https://menarinipharma--test.sandbox.my.site.com/ciam/secur/logout.jsp?startURL=https://google.com/'
+  'https://menarinipharma--test.sandbox.my.site.com/ciam/secur/logout.jsp?startURL=/s/login?source=logout%26retURL=https://google.com'
 
 // === MENU ACTIONS ===
 const openPreferenceCenter = () => {
