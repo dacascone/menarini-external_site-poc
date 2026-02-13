@@ -23,7 +23,7 @@ import { generateCodeVerifier, generateCodeChallenge } from '../utils/pkce-utils
 const API_BASE_URL = /* 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
 
 // Imposta qui la community che stai usando (release/ciam come dai log)
-const SFDC_COMMUNITY_URL = 'https://menarinipharma--release.sandbox.my.site.com/ciam'
+const SFDC_COMMUNITY_URL = 'https://menarinipharma--test.sandbox.my.site.com/ciam'
 
 export default {
   mounted() {

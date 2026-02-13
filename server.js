@@ -48,7 +48,7 @@ function buildSalesforceEndpoints(communityUrl) {
   // Se arriva dal FE, usiamo quello (es: https://.../ciam), altrimenti fallback release/ciam
   const base = (communityUrl && communityUrl.trim())
     ? communityUrl.replace(/\/+$/, '') // strip trailing slash
-    : 'https://menarinipharma--release.sandbox.my.site.com/ciam'
+    : 'https://menarinipharma--test.sandbox.my.site.com/ciam'
 
   // authorize: con expid se presente, altrimenti senza segmento
   const authorize = expId
