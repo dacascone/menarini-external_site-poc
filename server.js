@@ -20,7 +20,7 @@ const clientId    = process.env.CLIENT_ID
 const redirectUri = process.env.REDIRECT_URI // es: http://localhost:3000/callback
 
 // EXPID opzionale: se assente NON lo aggiungiamo all'authorize URL
-const expId       = (process.env.EXPID || '').trim()
+const expId       = (process.env.EXPID_DEV || '').trim()
 
 /* ---------------------------------------------------------------------------
    MIDDLEWARE
