@@ -19,8 +19,9 @@ const clientId    = process.env.CLIENT_ID
 // ⚠️ Deve combaciare 1:1 con ciò usato in /auth-url (e registrato nella Connected App)
 const redirectUri = process.env.REDIRECT_URI // es: http://localhost:3000/callback
 
-// EXPID opzionale: se assente NON lo aggiungiamo all'authorize URL
-const expId       = (process.env.EXPID_DEV || '').trim()
+// EXPID opzionale: se assente NON lo aggiungiamo all'authorize URL.
+// Supportiamo anche il vecchio nome EXPID_DEV per retrocompatibilita'.
+const expId       = (process.env.EXPID || process.env.EXPID_DEV || '').trim()
 
 /* ---------------------------------------------------------------------------
    MIDDLEWARE

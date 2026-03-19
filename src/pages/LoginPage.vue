@@ -20,7 +20,7 @@
 /* eslint-disable no-console */
 import { generateCodeVerifier, generateCodeChallenge } from '../utils/pkce-utils'
 
-const API_BASE_URL = /* 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
+const getApiBaseUrl = () => process.env.VUE_APP_API_BASE_URL || window.location.origin
 
 // Imposta qui la community che stai usando (release/ciam come dai log)
 const SFDC_COMMUNITY_URL = 'https://menarinipharma--developer.sandbox.my.site.com/ciam'
@@ -36,7 +36,7 @@ export default {
         const codeChallenge = await generateCodeChallenge(codeVerifier)
         localStorage.setItem('code_verifier', codeVerifier)
 
-        const response = await fetch(`${API_BASE_URL}/auth-url`, {
+        const response = await fetch(`${getApiBaseUrl()}/auth-url`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           // 👇 passiamo anche la community per allineare authorize/token/revoke

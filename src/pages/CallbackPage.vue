@@ -12,8 +12,7 @@
 /* eslint-disable camelcase,no-console */
 import axios from 'axios'
 
-const API_BASE_URL = process.env.VUE_APP_API_BASE_URL
-  || /* 'http://localhost:3000' */ 'https://menarini-external-site-poc-a6774a35f622.herokuapp.com'
+const getApiBaseUrl = () => process.env.VUE_APP_API_BASE_URL || window.location.origin
 
 export default {
   data() {
@@ -35,7 +34,7 @@ export default {
     console.log('code: ', code)
 
     if (code && codeVerifier) {
-      axios.post(`${API_BASE_URL}/oauth2/callback`, {
+      axios.post(`${getApiBaseUrl()}/oauth2/callback`, {
         code,
         sfdc_community_url: sfdcCommunityUrl,
         code_verifier: codeVerifier,
