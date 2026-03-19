@@ -14,7 +14,7 @@ const port = process.env.PORT || 3000
    CONFIG
 --------------------------------------------------------------------------- */
 const clientId    = process.env.CLIENT_ID
-  || '3MVG9kfeuo6xCm.r16r._goNjZJwm9BX9OEpyjQIaM0IFaHzM03TumZzRG55dLBMo0s8Dip4zslg.gbarRkjA'
+  || '3MVG9Lu3LaaTCEgI8_6qsui3DTcHOgNEzZ1CW4UduSa7IH6O08ncPT6oblRBSSDenx6pxjYajvjIBXX5dK7AF'
 
 // ⚠️ Deve combaciare 1:1 con ciò usato in /auth-url (e registrato nella Connected App)
 const redirectUri = process.env.REDIRECT_URI // es: http://localhost:3000/callback
