@@ -1,10 +1,15 @@
 <template>
-  <div v-if="false" />
+  <div v-if="isLoading" class="popup-loader-backdrop" aria-live="polite" aria-busy="true">
+    <div class="popup-loader-card">
+      <div class="popup-loader-spinner" />
+      <div class="popup-loader-text">Loading your preferences...</div>
+    </div>
+  </div>
 </template>
 
 <script setup>
 /* eslint-disable no-console */
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import {
   extractCountryFromPayload,
   extractEmailFromPayload,
@@ -21,6 +26,7 @@ const OT_DATA_ID = '45e0801a-31b6-4247-a6a7-7bff3084463a'
 const OT_COLLECTION_POINT_ID = '5929819a-edf3-47f9-8ef8-9b3e67bf5a9e'
 const OT_WORKER_URL = 'https://consent-api.onetrust.com'
 const OT_POPUP_KEY_NAME = 'menariniOneTrustPopupKey'
+const isLoading = ref(false)
 
 const loadOneTrustStub = () => new Promise((resolve, reject) => {
   const existingScript = document.getElementById(OT_SCRIPT_ID)
@@ -105,38 +111,44 @@ const loadPopupIfNeeded = async () => {
     return
   }
 
-  const email = extractEmailFromPayload(payload)
-  if (!email) {
-    console.warn('[OneTrust Popup] Email utente non trovata nel token CIAM')
-    return
+  isLoading.value = true
+
+  try {
+    const email = extractEmailFromPayload(payload)
+    if (!email) {
+      console.warn('[OneTrust Popup] Email utente non trovata nel token CIAM')
+      return
+    }
+
+    const response = await fetch(`${getApiBaseUrl()}/onetrust/popup-status`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    })
+
+    if (!response.ok) {
+      const message = await response.text()
+      throw new Error(`Popup status request failed (${response.status}): ${message}`)
+    }
+
+    const popupStatus = await response.json()
+    if (!popupStatus.showPopup) {
+      return
+    }
+
+    if (!popupStatus.individualId) {
+      console.warn('[OneTrust Popup] IndividualID non trovato per email', email)
+      return
+    }
+
+    await loadOneTrustStub()
+    await installPopup({
+      individualId: popupStatus.individualId,
+      email: popupStatus.email || email
+    })
+  } finally {
+    isLoading.value = false
   }
-
-  const response = await fetch(`${getApiBaseUrl()}/onetrust/popup-status`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email })
-  })
-
-  if (!response.ok) {
-    const message = await response.text()
-    throw new Error(`Popup status request failed (${response.status}): ${message}`)
-  }
-
-  const popupStatus = await response.json()
-  if (!popupStatus.showPopup) {
-    return
-  }
-
-  if (!popupStatus.individualId) {
-    console.warn('[OneTrust Popup] IndividualID non trovato per email', email)
-    return
-  }
-
-  await loadOneTrustStub()
-  await installPopup({
-    individualId: popupStatus.individualId,
-    email: popupStatus.email || email
-  })
 }
 
 onMounted(async () => {
@@ -147,3 +159,47 @@ onMounted(async () => {
   }
 })
 </script>
+
+<style scoped>
+.popup-loader-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(3px);
+}
+
+.popup-loader-card {
+  min-width: 240px;
+  padding: 18px 22px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 40px rgba(13, 33, 61, 0.16);
+  text-align: center;
+}
+
+.popup-loader-spinner {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto 12px;
+  border: 3px solid rgba(176, 186, 196, 0.5);
+  border-top-color: #0d5cab;
+  border-radius: 50%;
+  animation: popup-loader-spin 0.8s linear infinite;
+}
+
+.popup-loader-text {
+  color: #12324d;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+@keyframes popup-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+</style>
