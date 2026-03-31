@@ -21,6 +21,17 @@ const redirectUri = process.env.REDIRECT_URI // es: http://localhost:3000/callba
 
 // EXPID opzionale: se assente NON lo aggiungiamo all'authorize URL
 const expId       = (process.env.EXPID || '').trim()
+const oneTrustBaseUrl = (
+  process.env.ONETRUST_BASE_URL || 'https://daisytestsandbox-sandbox-428.my.onetrust.com'
+).replace(/\/+$/, '')
+const oneTrustClientId = (process.env.ONETRUST_CLIENT_ID || '').trim()
+const oneTrustClientSecret = (process.env.ONETRUST_CLIENT_SECRET || '').trim()
+const oneTrustPopupPurposeName = (process.env.ONETRUST_POPUP_PURPOSE_NAME || 'Channels allowed|095').trim()
+const oneTrustSearchPageSize = Number(process.env.ONETRUST_SEARCH_PAGE_SIZE || 25)
+let oneTrustTokenCache = {
+  accessToken: '',
+  expiresAt: 0
+}
 
 /* ---------------------------------------------------------------------------
    MIDDLEWARE
@@ -43,6 +54,18 @@ function ensureRedirectUriPresent(res) {
   return true
 }
 
+function ensureOneTrustConfigPresent(res) {
+  if (!oneTrustClientId || !oneTrustClientSecret) {
+    res.status(500).json({
+      error: 'missing_onetrust_credentials',
+      error_description: 'ONETRUST_CLIENT_ID and ONETRUST_CLIENT_SECRET must be set on the server'
+    })
+    return false
+  }
+
+  return true
+}
+
 // Costruisce dinamicamente gli endpoint a partire da una communityUrl se fornita
 function buildSalesforceEndpoints(communityUrl) {
   // Se arriva dal FE, usiamo quello (es: https://.../ciam), altrimenti fallback release/ciam
@@ -59,6 +82,160 @@ function buildSalesforceEndpoints(communityUrl) {
   const revoke = `${base}/services/oauth2/revoke`
 
   return { authorize, token, revoke }
+}
+
+function normalizeEmail(value) {
+  return String(value || '').trim().toLowerCase()
+}
+
+function getOneTrustDataElementEntries(dataSubject) {
+  const dataElements = dataSubject?.dataElements || {}
+
+  if (Array.isArray(dataElements)) {
+    return dataElements.map((entry) => [entry.Name, entry.Value])
+  }
+
+  return Object.entries(dataElements)
+}
+
+function selectBestMatchingDataSubject(dataSubjects, email) {
+  const normalizedEmail = normalizeEmail(email)
+  const exactMatches = dataSubjects
+    .filter((dataSubject) => {
+      if (normalizeEmail(dataSubject?.identifier) === normalizedEmail) {
+        return true
+      }
+
+      return getOneTrustDataElementEntries(dataSubject)
+        .some(([, value]) => normalizeEmail(value) === normalizedEmail)
+    })
+    .sort((left, right) => {
+      const leftHasGermanyEmail = getOneTrustDataElementEntries(left)
+        .some(([name, value]) => name.includes('|DE|') && normalizeEmail(value) === normalizedEmail)
+      const rightHasGermanyEmail = getOneTrustDataElementEntries(right)
+        .some(([name, value]) => name.includes('|DE|') && normalizeEmail(value) === normalizedEmail)
+
+      if (leftHasGermanyEmail !== rightHasGermanyEmail) {
+        return rightHasGermanyEmail - leftHasGermanyEmail
+      }
+
+      return new Date(right.lastUpdatedDate || 0) - new Date(left.lastUpdatedDate || 0)
+    })
+
+  return exactMatches[0] || null
+}
+
+async function getOneTrustAccessToken() {
+  const now = Date.now()
+
+  if (oneTrustTokenCache.accessToken && oneTrustTokenCache.expiresAt > now) {
+    return oneTrustTokenCache.accessToken
+  }
+
+  const body = new URLSearchParams({
+    grant_type: 'client_credentials',
+    client_id: oneTrustClientId,
+    client_secret: oneTrustClientSecret
+  })
+
+  const { status, data } = await axios.post(
+    `${oneTrustBaseUrl}/api/access/v1/oauth/token`,
+    body.toString(),
+    {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      validateStatus: () => true
+    }
+  )
+
+  if (status >= 400 || !data?.access_token) {
+    throw new Error(`OneTrust token request failed (${status})`)
+  }
+
+  const expiresInSeconds = Number(data.expires_in || 3600)
+  oneTrustTokenCache = {
+    accessToken: data.access_token,
+    expiresAt: now + Math.max(expiresInSeconds - 60, 60) * 1000
+  }
+
+  return oneTrustTokenCache.accessToken
+}
+
+async function searchOneTrustDataSubjectsByEmail(email) {
+  const accessToken = await getOneTrustAccessToken()
+  const { status, data } = await axios.post(
+    `${oneTrustBaseUrl}/api/consentmanager/v2/datasubjects/search`,
+    { query: email },
+    {
+      params: {
+        size: oneTrustSearchPageSize,
+        properties: 'ignoreCount'
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      validateStatus: () => true
+    }
+  )
+
+  if (status >= 400) {
+    throw new Error(`OneTrust search request failed (${status})`)
+  }
+
+  return Array.isArray(data?.content) ? data.content : []
+}
+
+async function getOneTrustProfileByIdentifier(identifier) {
+  const accessToken = await getOneTrustAccessToken()
+  const { status, data } = await axios.get(
+    `${oneTrustBaseUrl}/api/consentmanager/v1/datasubjects/profiles`,
+    {
+      params: {
+        size: 1,
+        properties: 'ignoreCount'
+      },
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+        Identifier: identifier
+      },
+      validateStatus: () => true
+    }
+  )
+
+  if (status >= 400) {
+    throw new Error(`OneTrust profile request failed (${status})`)
+  }
+
+  return Array.isArray(data?.content) ? data.content[0] || null : null
+}
+
+function resolvePopupStatusFromProfile(profile) {
+  if (!profile) {
+    return {
+      showPopup: true,
+      consentStatus: 'NOT_FOUND'
+    }
+  }
+
+  const purpose = (profile.Purposes || [])
+    .find(({ Name }) => Name === oneTrustPopupPurposeName)
+
+  if (!purpose) {
+    return {
+      showPopup: true,
+      consentStatus: 'MISSING'
+    }
+  }
+
+  return {
+    showPopup: purpose.Status === 'NO_CONSENT',
+    consentStatus: purpose.Status || 'UNKNOWN'
+  }
 }
 
 /* ---------------------------------------------------------------------------
@@ -86,6 +263,50 @@ app.post('/auth-url', (req, res) => {
   console.log('[AUTH-URL] redirect_uri:', redirectUri)
   console.log('[AUTH-URL] built:', authUrl)
   res.json({ authUrl })
+})
+
+app.post('/onetrust/popup-status', async (req, res) => {
+  if (!ensureOneTrustConfigPresent(res)) return
+
+  const email = normalizeEmail(req.body?.email)
+  if (!email) {
+    res.status(400).json({
+      error: 'missing_email',
+      error_description: 'email is required'
+    })
+    return
+  }
+
+  try {
+    const searchResults = await searchOneTrustDataSubjectsByEmail(email)
+    const matchedDataSubject = selectBestMatchingDataSubject(searchResults, email)
+
+    if (!matchedDataSubject?.identifier) {
+      res.json({
+        email,
+        individualId: '',
+        consentStatus: 'INDIVIDUAL_NOT_FOUND',
+        showPopup: false
+      })
+      return
+    }
+
+    const profile = await getOneTrustProfileByIdentifier(matchedDataSubject.identifier)
+    const popupStatus = resolvePopupStatusFromProfile(profile)
+
+    res.json({
+      email,
+      individualId: matchedDataSubject.identifier,
+      consentStatus: popupStatus.consentStatus,
+      showPopup: popupStatus.showPopup
+    })
+  } catch (error) {
+    console.error('[ONETRUST][POPUP-STATUS]', error?.response?.data || error.message)
+    res.status(500).json({
+      error: 'onetrust_popup_status_failed',
+      error_description: error.message || 'unknown_error'
+    })
+  }
 })
 
 // 2) Scambia l’authorization code per i token

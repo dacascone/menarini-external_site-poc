@@ -1,5 +1,7 @@
 <template>
   <q-page class="flex flex-center column q-pa-lg">
+    <OneTrustConsentPopup />
+
     <!-- Immagine centrata -->
     <!--img
       src="~assets/consensi.png"
@@ -18,6 +20,8 @@
 </template>
 
 <script setup>
+import OneTrustConsentPopup from '../components/OneTrustConsentPopup.vue'
+
 defineOptions({
   name: 'IndexPage'
 })

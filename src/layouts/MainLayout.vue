@@ -62,7 +62,11 @@
 /* eslint-disable no-console */
 import { ref } from 'vue'
 import { useQuasar } from 'quasar'
-import { jwtDecode } from 'jwt-decode'
+import {
+  getDecodedJwtPayload,
+  extractCountryFromPayload,
+  resolveCountryCode
+} from '../utils/ciam-user'
 
 // === CONFIG ===
 const SFDC_COMMUNITY_LOGOUT_URL =
@@ -74,58 +78,8 @@ const PREFERENCE_CENTER_URL_BY_COUNTRY = Object.freeze({
   VT: 'https://daisytestsandbox-privacy-sandbox-428.my.onetrust.com/ui/#/preferences/multipage/login/5c376cb9-1c65-4062-a32d-7ac83f2d8f4e',
   HK: 'https://daisytestsandbox-privacy-sandbox-428.my.onetrust.com/ui/#/preferences/multipage/login/b866cbea-adef-4c00-af40-d2ee55a0d4ca'
 })
-const COUNTRY_ALIAS_TO_CODE = Object.freeze({
-  UK: 'UK',
-  GB: 'UK',
-  'UNITED KINGDOM': 'UK',
-  'GREAT BRITAIN': 'UK',
-  ENGLAND: 'UK',
-  DE: 'DE',
-  GERMANY: 'DE',
-  DEUTSCHLAND: 'DE',
-  TH: 'TH',
-  THAILAND: 'TH',
-  VT: 'VT',
-  VN: 'VT',
-  VIETNAM: 'VT',
-  'VIET NAM': 'VT',
-  HK: 'HK',
-  'HONG KONG': 'HK',
-  'HONG KONG SAR CHINA': 'HK'
-})
 
 const $q = useQuasar()
-
-const normalizeCountry = (value) => String(value || '').trim().toUpperCase()
-
-const getDecodedJwtPayload = () => {
-  const tokenKeys = ['access_token', 'sf_access_token']
-  const decodedAttempts = tokenKeys
-    .map((tokenKey) => ({ tokenKey, token: localStorage.getItem(tokenKey) }))
-    .filter(({ token }) => Boolean(token))
-    .map(({ tokenKey, token }) => {
-      try {
-        return { payload: jwtDecode(token), tokenKey }
-      } catch (error) {
-        console.warn(`[PreferenceCenter] Token ${tokenKey} non decodificabile`, error)
-        return { payload: null, tokenKey }
-      }
-    })
-
-  const validPayload = decodedAttempts.find(({ payload }) => Boolean(payload))
-  return validPayload ? validPayload.payload : null
-}
-
-const extractCountryFromPayload = (payload) => {
-  if (!payload) return ''
-  return payload.address?.country || payload.country || payload.countryCode || payload.country_code || ''
-}
-
-const resolveCountryCode = (rawCountry) => {
-  const normalized = normalizeCountry(rawCountry)
-  if (!normalized) return ''
-  return COUNTRY_ALIAS_TO_CODE[normalized] || normalized
-}
 
 // === MENU ACTIONS ===
 const openPreferenceCenter = () => {
