@@ -66,7 +66,7 @@ import { jwtDecode } from 'jwt-decode'
 
 // === CONFIG ===
 const SFDC_COMMUNITY_LOGOUT_URL =
-  'https://menarinipharma--developer.sandbox.my.site.com/ciam/secur/logout.jsp?startURL=/s/login?source=logout%26retURL=https://google.com'
+  'https://menarinipharma.my.site.com/ciam/secur/logout.jsp?startURL=/s/login?source=logout%26retURL=https://google.com'
 const PREFERENCE_CENTER_URL_BY_COUNTRY = Object.freeze({
   UK: 'https://daisytestsandbox-privacy-sandbox-428.my.onetrust.com/ui/#/preferences/multipage/login/cc2e1747-e899-4d1a-9e3d-76ba387d0d2f',
   DE: 'https://daisytestsandbox-privacy-sandbox-428.my.onetrust.com/ui/#/preferences/multipage/login/0028c7f3-5a50-4715-8400-abe7847b00aa',

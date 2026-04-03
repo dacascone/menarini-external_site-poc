@@ -23,7 +23,7 @@ import { generateCodeVerifier, generateCodeChallenge } from '../utils/pkce-utils
 const getApiBaseUrl = () => process.env.VUE_APP_API_BASE_URL || window.location.origin
 
 // Imposta qui la community che stai usando (release/ciam come dai log)
-const SFDC_COMMUNITY_URL = 'https://menarinipharma--developer.sandbox.my.site.com/ciam'
+const SFDC_COMMUNITY_URL = 'https://menarinipharma.my.site.com/ciam'
 
 export default {
   mounted() {
