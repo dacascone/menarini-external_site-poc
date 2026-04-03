@@ -68,11 +68,11 @@ import { jwtDecode } from 'jwt-decode'
 const SFDC_COMMUNITY_LOGOUT_URL =
   'https://menarinipharma.my.site.com/ciam/secur/logout.jsp?startURL=/s/login?source=logout%26retURL=https://google.com'
 const PREFERENCE_CENTER_URL_BY_COUNTRY = Object.freeze({
-  UK: 'https://daisytestsandbox-privacy-sandbox-428.my.onetrust.com/ui/#/preferences/multipage/login/cc2e1747-e899-4d1a-9e3d-76ba387d0d2f',
-  DE: 'https://daisytestsandbox-privacy-sandbox-428.my.onetrust.com/ui/#/preferences/multipage/login/0028c7f3-5a50-4715-8400-abe7847b00aa',
-  TH: 'https://daisytestsandbox-privacy-sandbox-428.my.onetrust.com/ui/#/preferences/multipage/login/42f4a2fb-15e0-40e1-87d9-c11c35f570be',
-  VT: 'https://daisytestsandbox-privacy-sandbox-428.my.onetrust.com/ui/#/preferences/multipage/login/5c376cb9-1c65-4062-a32d-7ac83f2d8f4e',
-  HK: 'https://daisytestsandbox-privacy-sandbox-428.my.onetrust.com/ui/#/preferences/multipage/login/b866cbea-adef-4c00-af40-d2ee55a0d4ca'
+  UK: 'https://privacyportal-de.onetrust.com/ui/#/preferences/multipage/login/fddc8354-7a99-47e2-a298-674338f97e83',
+  DE: 'https://privacyportal-de.onetrust.com/ui/#/preferences/multipage/login/991acace-a07e-43b6-9026-41809fa30de3',
+  TH: 'https://privacyportal-de.onetrust.com/ui/#/preferences/multipage/login/4acddad1-fd39-487a-b5e5-a81bfd5d677d',
+  VT: 'https://privacyportal-de.onetrust.com/ui/#/preferences/multipage/login/53e3cafc-de42-4f8f-8b38-f7f2514d1b89',
+  HK: 'https://privacyportal-de.onetrust.com/ui/#/preferences/multipage/login/07e2d307-c113-4949-abde-d856ed006857'
 })
 const COUNTRY_ALIAS_TO_CODE = Object.freeze({
   UK: 'UK',
